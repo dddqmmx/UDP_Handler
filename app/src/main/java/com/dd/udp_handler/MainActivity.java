@@ -2,10 +2,13 @@
 package com.dd.udp_handler;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.StrictMode;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,9 +22,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
+
         setContentView(R.layout.activity_main);
 
         TextView textView = (TextView) findViewById(R.id.textView12);
+
+        WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         Looper looper = this.getMainLooper();
         handler = new Handler(looper) {
@@ -34,7 +41,11 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        new Thread(()->{
+        UDPClient udpClient = new UDPClient();
+        udpClient.initialization("127.0.0.1",wifiManager,handler);
+        udpClient.start();
+
+        /*new Thread(()->{
 
             int number = 0;
             while (true) {
@@ -51,6 +62,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        }).start();*/
     }
 }
